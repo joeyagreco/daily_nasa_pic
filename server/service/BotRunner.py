@@ -24,8 +24,7 @@ class BotRunner:
             #   20 -> run at 8:00PM
             #   6 -> run at 6:00AM
             now = datetime.now()
-            # if now.hour == hourToRunAt and now.minute == 0:
-            if True:
+            if now.hour == hourToRunAt and now.minute == 0:
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
                 apod = nasaApiClient.getApod()
