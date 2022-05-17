@@ -1,15 +1,11 @@
-import os
-
-from server.client.NasaApiClient import NasaApiClient
-from server.twitter.TwitterTweeter import TwitterTweeter
-from server.util.ImageDownloader import ImageDownloader
+from server.service.BotRunner import BotRunner
+from server.util.CustomLogger import CustomLogger
+from server.util.EnvironmentReader import EnvironmentReader
 
 if __name__ == "__main__":
-    # filePath = "C:/Users/14143/PycharmProjects/daily_nasa_pic"
-    # fileName = "tmp.jpg"
-    # ImageDownloader.downloadImageByUrl("https://apod.nasa.gov/apod/image/2205/CoiffeesMW_Barakat_960.jpg", fileName, filePath)
-    # tt = TwitterTweeter()
-    # tt.createTweet("test jg", mediaUrls=[os.path.join(filePath, fileName)])
-    nac = NasaApiClient()
-    apod = nac.getApod()
-    print(apod)
+    LOGGER = CustomLogger.getLogger()
+    HOUR_TO_RUN_BOT_AT = EnvironmentReader.get("HOUR_TO_RUN_BOT_AT")
+    LOGGER.info("STARTING BOT...")
+    LOGGER.info(f"WILL TWEET OUT DAILY ON HOUR {HOUR_TO_RUN_BOT_AT}.")
+    botRunner = BotRunner()
+    botRunner.run(HOUR_TO_RUN_BOT_AT)
