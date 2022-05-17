@@ -1,4 +1,5 @@
 from tweepy import Response
+from tweepy.models import Status
 
 from server.twitter.TwitterAPI import TwitterAPI
 
@@ -6,7 +7,7 @@ from server.twitter.TwitterAPI import TwitterAPI
 class TwitterTweeter:
 
     @classmethod
-    def createTweet(cls, text: str, **kwargs) -> Response:
+    def createTweet(cls, text: str, **kwargs) -> Status:
         mediaUrls = kwargs.pop("mediaUrls", list())
         api = TwitterAPI.getAPI()
         medias = list()
