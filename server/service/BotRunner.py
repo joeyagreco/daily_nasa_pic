@@ -14,6 +14,8 @@ class BotRunner:
     def __init__(self):
         self.__LOGGER = CustomLogger.getLogger()
         self.__SLEEP_FOR_SECONDS = 50
+        self.__TMP_DIRECTORY_NAME = "tmp"
+        self.__TMP_FILE_NAME = "tmp.jpg"
 
     def run(self, hourToRunAt: int):
         nasaApiClient = NasaApiClient()
@@ -28,8 +30,8 @@ class BotRunner:
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
                 apod = nasaApiClient.getApod()
-                tmpFolderDirectory = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), "../tmp"))
-                fileName = "tmp.jpg"
+                tmpFolderDirectory = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../{self.__TMP_DIRECTORY_NAME}"))
+                fileName = self.__TMP_FILE_NAME
                 # create the tmp directory if it doesn't already exist
                 if not os.path.exists(tmpFolderDirectory):
                     self.__LOGGER.info(f"CREATING DIRECTORY AT '{tmpFolderDirectory}'")
