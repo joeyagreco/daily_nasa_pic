@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 
 from server.client.NasaApiClient import NasaApiClient
+from server.twitter.TwitterSearcher import TwitterSearcher
 from server.twitter.TwitterTweeter import TwitterTweeter
 from server.util.CustomLogger import CustomLogger
 from server.util.EnvironmentReader import EnvironmentReader
@@ -13,9 +14,11 @@ class BotRunner:
 
     def __init__(self):
         self.__LOGGER = CustomLogger.getLogger()
-        self.__SLEEP_FOR_SECONDS = 50
+        self.__SECONDS_IN_MINUTE = 60
+        self.__SLEEP_FOR_MINUTES = 50
         self.__TMP_DIRECTORY_NAME = "tmp"
         self.__TMP_FILE_NAME = "tmp.jpg"
+        self.__TWITTER_ACCOUNT_ID = int(EnvironmentReader.get("TWITTER_ACCOUNT_ID"))
 
     def run(self, hourToRunAt: int):
         nasaApiClient = NasaApiClient()
@@ -26,7 +29,9 @@ class BotRunner:
             #   20 -> run at 8:00PM
             #   6 -> run at 6:00AM
             now = datetime.now()
-            if now.hour == hourToRunAt and now.minute == 0:
+            # get the latest tweet from the account to see if the account has already tweeted today
+            latestTweets = TwitterSearcher.getLatestTweetsByUsername(self.__TWITTER_ACCOUNT_ID, count=1)
+            if now.hour == hourToRunAt and (len(latestTweets) == 0 or latestTweets[0].created_at.day != now.day):
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
                 apod = nasaApiClient.getApod()
@@ -48,7 +53,7 @@ class BotRunner:
                 status = twitterTweeter.createTweet(tweetText, mediaUrls=[fullImagePath])
                 self.__LOGGER.info(f"TWEETED SUCCESSFULLY: {EnvironmentReader.get('TWEET_BASE_URL')}{status.id}")
             # sleep until next check
-            self.__LOGGER.info(f"SLEEPING FOR {self.__SLEEP_FOR_SECONDS} SECONDS...")
-            time.sleep(self.__SLEEP_FOR_SECONDS)
+            self.__LOGGER.info(f"SLEEPING FOR {self.__SLEEP_FOR_MINUTES} MINUTES...")
+            time.sleep(self.__SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
 
 
