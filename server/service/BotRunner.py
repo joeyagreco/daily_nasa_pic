@@ -30,8 +30,8 @@ class BotRunner:
             #   6 -> run at 6:00AM
             now = datetime.now()
             # get the latest tweet from the account to see if the account has already tweeted today
-            latestTweets = TwitterSearcher.getLatestTweetsByUsername(self.__TWITTER_ACCOUNT_ID, count=1)
-            if now.hour == hourToRunAt and (len(latestTweets) == 0 or latestTweets[0].created_at.day != now.day):
+            latestTweetsList = TwitterSearcher.getLatestTweetsByUsername(self.__TWITTER_ACCOUNT_ID, count=1)
+            if now.hour == hourToRunAt and (len(latestTweetsList) == 0 or latestTweetsList[0].created_at.day != now.day):
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
                 apod = nasaApiClient.getApod()
