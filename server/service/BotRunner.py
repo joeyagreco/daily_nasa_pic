@@ -55,5 +55,3 @@ class BotRunner:
             # sleep until next check
             self.__LOGGER.info(f"SLEEPING FOR {self.__SLEEP_FOR_MINUTES} MINUTES...")
             time.sleep(self.__SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
-
-
