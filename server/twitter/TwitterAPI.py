@@ -1,7 +1,7 @@
 import tweepy
-from tweepy import Client, API, OAuthHandler
+from tweepy import API, OAuthHandler
 
-from server.auth.TwitterAuth import TwitterAuth
+from server.twitter.TwitterAuth import TwitterAuth
 
 
 class TwitterAPI:

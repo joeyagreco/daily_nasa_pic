@@ -23,19 +23,21 @@ class BotRunner:
     def run(self, hourToRunAt: int):
         nasaApiClient = NasaApiClient()
         while True:
-            # run this daily at the top of the given hour (in military time)
+            # run this daily at the given hour
             # Example:
-            #   12 -> run at 12:00PM
-            #   20 -> run at 8:00PM
-            #   6 -> run at 6:00AM
+            #   12 -> run after 12:00PM
+            #   20 -> run after 8:00PM
+            #   6 -> run after 6:00AM
             now = datetime.now()
             # get the latest tweet from the account to see if the account has already tweeted today
             latestTweetsList = TwitterSearcher.getLatestTweetsByUsername(self.__TWITTER_ACCOUNT_ID, count=1)
-            if now.hour == hourToRunAt and (len(latestTweetsList) == 0 or latestTweetsList[0].created_at.day != now.day):
+            if now.hour == hourToRunAt and (
+                    len(latestTweetsList) == 0 or latestTweetsList[0].created_at.day != now.day):
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
                 apod = nasaApiClient.getApod()
-                tmpFolderDirectory = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../{self.__TMP_DIRECTORY_NAME}"))
+                tmpFolderDirectory = os.path.abspath(
+                    os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../{self.__TMP_DIRECTORY_NAME}"))
                 fileName = self.__TMP_FILE_NAME
                 # create the tmp directory if it doesn't already exist
                 if not os.path.exists(tmpFolderDirectory):
