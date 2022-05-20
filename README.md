@@ -1,6 +1,7 @@
 # Daily NASA Pic
 
-Daily NASA Pic is a Twitter bot that uses the [NASA API](https://api.nasa.gov/) to tweet out the image daily.
+Daily NASA Pic is a Twitter bot that uses the [NASA API](https://api.nasa.gov/) to tweet out the Astronomy Picture of
+the Day daily.
 
 ## Installation
 
