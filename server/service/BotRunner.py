@@ -18,7 +18,7 @@ class BotRunner:
         self.__SLEEP_FOR_MINUTES = 50
         self.__TMP_DIRECTORY_NAME = "tmp"
         self.__TMP_FILE_NAME = "tmp.jpg"
-        self.__TWITTER_ACCOUNT_ID = int(EnvironmentReader.get("TWITTER_ACCOUNT_ID"))
+        self.__TWITTER_ACCOUNT_ID = EnvironmentReader.get("TWITTER_ACCOUNT_ID", int)
 
     def run(self, hourToRunAt: int):
         nasaApiClient = NasaApiClient()

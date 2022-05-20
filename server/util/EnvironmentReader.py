@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 class EnvironmentReader:
 
     @staticmethod
-    def get(variableName: str):
+    def get(variableName: str, castTo: type = None):
         load_dotenv()
-        return os.getenv(variableName)
+        var = os.getenv(variableName)
+        if castTo:
+            var = castTo(var)
+        return var
