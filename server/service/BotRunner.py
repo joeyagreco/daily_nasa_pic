@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 
 from server.client.NasaApiClient import NasaApiClient
+from server.model.ApodResponse import ApodResponse
 from server.twitter.TwitterSearcher import TwitterSearcher
 from server.twitter.TwitterTweeter import TwitterTweeter
 from server.util.CustomLogger import CustomLogger
@@ -51,9 +52,15 @@ class BotRunner:
                 ImageDownloader.downloadImageByUrl(apod.url, fileName, tmpFolderDirectory)
                 # create and send tweet
                 twitterTweeter = TwitterTweeter()
-                tweetText = f'{apod.date.strftime("%B %#d, %Y")}\n\n"{apod.title}"\n\n{apod.copyright}'
+                tweetText = self.__buildTweet(apod)
                 status = twitterTweeter.createTweet(tweetText, mediaUrls=[fullImagePath])
                 self.__LOGGER.info(f"TWEETED SUCCESSFULLY: {EnvironmentReader.get('TWEET_BASE_URL')}{status.id}")
             # sleep until next check
             self.__LOGGER.info(f"SLEEPING FOR {self.__SLEEP_FOR_MINUTES} MINUTES...")
             time.sleep(self.__SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
+
+    def __buildTweet(self, apod: ApodResponse) -> str:
+        tweetStr = f'{apod.date.strftime("%B %#d, %Y")}\n\n"{apod.title}"'
+        if apod.copyright:
+            tweetStr += f"\n\n{apod.copyright}"
+        return tweetStr
