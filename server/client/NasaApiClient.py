@@ -4,6 +4,7 @@ from typing import Optional
 import requests
 
 from server.model.ApodResponse import ApodResponse
+from server.util.CustomLogger import CustomLogger
 from server.util.EnvironmentReader import EnvironmentReader
 
 
@@ -13,6 +14,7 @@ class NasaApiClient:
     """
 
     def __init__(self):
+        self.__LOGGER = CustomLogger.getLogger()
         self.__BASE_URL = EnvironmentReader.get("NASA_API_BASE_URL")
         self.__APOD_ROUTE = EnvironmentReader.get("NASA_API_APOD_ROUTE")
         self.__API_KEY = EnvironmentReader.get("NASA_API_KEY")
@@ -30,8 +32,12 @@ class NasaApiClient:
                                            url=apodResponse["url"])
         return apodResponseObj
 
-    def getApod(self) -> ApodResponse:
+    def getApod(self) -> Optional[ApodResponse]:
         url = f"{self.__BASE_URL}{self.__APOD_ROUTE}?api_key={self.__API_KEY}"
-        response = requests.get(url).json()
-        return self.__objectifyApodResponse(response)
-
+        apod = None
+        try:
+            response = requests.get(url).json()
+            apod = self.__objectifyApodResponse(response)
+        except Exception as e:
+            self.__LOGGER.error(str(e))
+        return apod

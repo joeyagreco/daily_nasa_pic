@@ -17,6 +17,8 @@ class BotRunner:
         self.__LOGGER = CustomLogger.getLogger()
         self.__SECONDS_IN_MINUTE = 60
         self.__SLEEP_FOR_MINUTES = 50
+        self.__GET_APOD_MAX_RETRIES = 5
+        self.__GET_APOD_SLEEP_FOR_MINUTES = 2
         self.__TMP_DIRECTORY_NAME = "tmp"
         self.__TMP_FILE_NAME = "tmp.jpg"
         self.__TWITTER_ACCOUNT_ID = EnvironmentReader.get("TWITTER_ACCOUNT_ID", int)
@@ -32,11 +34,17 @@ class BotRunner:
             now = datetime.now()
             # get the latest tweet from the account to see if the account has already tweeted today
             latestTweetsList = TwitterSearcher.getLatestTweetsByUsername(self.__TWITTER_ACCOUNT_ID, count=1)
-            if now.hour == hourToRunAt and (
-                    len(latestTweetsList) == 0 or latestTweetsList[0].created_at.day != now.day):
+            if (now.hour == hourToRunAt and len(latestTweetsList) == 0) \
+                    or latestTweetsList[0].created_at.day != now.day:
                 self.__LOGGER.info(f"TIME MATCH... RUNNING BOT...")
                 # get Astronomy Picture of the Day
-                apod = nasaApiClient.getApod()
+                for _ in range(self.__GET_APOD_MAX_RETRIES):
+                    apod = nasaApiClient.getApod()
+                    if apod is not None:
+                        break
+                    self.__LOGGER.warning(f"COULD NOT GET APOD.")
+                    self.__LOGGER.warning(f"SLEEPING FOR {self.__SLEEP_FOR_MINUTES} MINUTES...")
+                    time.sleep(self.__GET_APOD_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
                 tmpFolderDirectory = os.path.abspath(
                     os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../{self.__TMP_DIRECTORY_NAME}"))
                 fileName = self.__TMP_FILE_NAME
