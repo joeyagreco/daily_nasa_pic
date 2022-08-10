@@ -1,4 +1,5 @@
 from datetime import datetime
+from http import HTTPStatus
 from typing import Optional
 
 import requests
@@ -37,6 +38,7 @@ class NasaApiClient:
         apod = None
         try:
             response = requests.get(url).json()
+            response.raise_for_status()
             apod = self.__objectifyApodResponse(response)
         except Exception as e:
             self.__LOGGER.error(str(e))
