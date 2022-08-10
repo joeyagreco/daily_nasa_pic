@@ -37,9 +37,9 @@ class NasaApiClient:
         url = f"{self.__BASE_URL}{self.__APOD_ROUTE}?api_key={self.__API_KEY}"
         apod = None
         try:
-            response = requests.get(url).json()
+            response = requests.get(url)
             response.raise_for_status()
-            apod = self.__objectifyApodResponse(response)
+            apod = self.__objectifyApodResponse(response.json())
         except Exception as e:
             self.__LOGGER.error(str(e))
         return apod
