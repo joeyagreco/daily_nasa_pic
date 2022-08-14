@@ -49,6 +49,7 @@ class BotRunner:
                     self.__LOGGER.warning(
                         f"SLEEPING FOR {self.__GET_APOD_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE} MINUTES...")
                     time.sleep(self.__GET_APOD_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
+                    continue
 
                 tmpFolderDirectory = os.path.abspath(
                     os.path.join(os.path.dirname(os.path.realpath(__file__)), f"../{self.__TMP_DIRECTORY_NAME}"))
