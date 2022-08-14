@@ -63,20 +63,27 @@ class BotRunner:
                 if os.path.exists(fullImagePath):
                     os.remove(fullImagePath)
 
-                for _ in range(self.__DOWNLOAD_IMAGE_MAX_RETRIES):
-                    # download image locally to tmp folder
-                    try:
-                        ImageDownloader.downloadImageByUrl(apod.url, fileName, tmpFolderDirectory)
-                    except Exception as e:
-                        self.__LOGGER.warning(f"COULD NOT GET APOD.")
-                        self.__LOGGER.warning(
-                            f"SLEEPING FOR {self.__DOWNLOAD_IMAGE_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE} MINUTES...")
-                        time.sleep(self.__DOWNLOAD_IMAGE_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
+                if apod.hdUrl is not None:
+                    # we have an image for this APOD
+                    for _ in range(self.__DOWNLOAD_IMAGE_MAX_RETRIES):
+                        # download image locally to tmp folder
+                        try:
+                            ImageDownloader.downloadImageByUrl(apod.url, fileName, tmpFolderDirectory)
+                        except Exception as e:
+                            self.__LOGGER.warning(f"COULD NOT GET APOD.")
+                            self.__LOGGER.warning(
+                                f"SLEEPING FOR {self.__DOWNLOAD_IMAGE_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE} MINUTES...")
+                            time.sleep(self.__DOWNLOAD_IMAGE_SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
 
                 # create and send tweet
                 twitterTweeter = TwitterTweeter()
                 tweetText = self.__buildTweet(apod)
-                status = twitterTweeter.createTweet(tweetText, mediaUrls=[fullImagePath])
+                if apod.hdUrl:
+                    # sending with image
+                    status = twitterTweeter.createTweet(tweetText, mediaUrls=[fullImagePath])
+                else:
+                    # sending with link
+                    status = twitterTweeter.createTweet(tweetText)
                 self.__LOGGER.info(f"TWEETED SUCCESSFULLY: {EnvironmentReader.get('TWEET_BASE_URL')}{status.id}")
 
             # sleep until next check
@@ -87,4 +94,6 @@ class BotRunner:
         tweetStr = f'{apod.date.strftime("%B %#d, %Y")}\n\n"{apod.title}"'
         if apod.copyright:
             tweetStr += f"\n\n{apod.copyright}"
+        if apod.url:
+            tweetStr += f"\n\n{apod.url}"
         return tweetStr

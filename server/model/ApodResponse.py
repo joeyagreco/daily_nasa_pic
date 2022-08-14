@@ -8,7 +8,8 @@ class ApodResponse:
     copyright: Optional[str]
     date: datetime
     explanation: str
-    hdUrl: str
+    hdUrl: Optional[str]
+    url: Optional[str]
     mediaType: str  # TODO: make enum
     serviceVersion: str
     title: str

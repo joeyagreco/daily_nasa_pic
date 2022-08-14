@@ -26,7 +26,7 @@ class NasaApiClient:
             apodResponseObj = ApodResponse(copyright=apodResponse.get("copyright", None),
                                            date=datetime.strptime(apodResponse["date"], "%Y-%m-%d"),
                                            explanation=apodResponse["explanation"],
-                                           hdUrl=apodResponse["hdurl"],
+                                           hdUrl=apodResponse.get("hdurl", None),
                                            mediaType=apodResponse["media_type"],
                                            serviceVersion=apodResponse["service_version"],
                                            title=apodResponse["title"],
