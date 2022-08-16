@@ -94,6 +94,6 @@ class BotRunner:
         tweetStr = f'{apod.date.strftime("%B %#d, %Y")}\n\n"{apod.title}"'
         if apod.copyright:
             tweetStr += f"\n\n{apod.copyright}"
-        if apod.url:
+        if not apod.hdUrl and apod.url:
             tweetStr += f"\n\n{apod.url}"
         return tweetStr
