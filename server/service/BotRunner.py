@@ -90,7 +90,8 @@ class BotRunner:
             self.__LOGGER.info(f"SLEEPING FOR {self.__SLEEP_FOR_MINUTES} MINUTES...")
             time.sleep(self.__SLEEP_FOR_MINUTES * self.__SECONDS_IN_MINUTE)
 
-    def __buildTweet(self, apod: ApodResponse) -> str:
+    @staticmethod
+    def __buildTweet(apod: ApodResponse) -> str:
         tweetStr = f'{apod.date.strftime("%B %#d, %Y")}\n\n"{apod.title}"'
         if apod.copyright:
             tweetStr += f"\n\n{apod.copyright}"
