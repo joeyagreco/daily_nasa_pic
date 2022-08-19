@@ -14,8 +14,9 @@ class DateConverter:
             timeStr = f"{militaryHour}:00 AM"
         elif militaryHour == 12:
             timeStr = "12:00 PM"
-        elif 13 <= militaryHour <= 24:
-            timeStr = f"{militaryHour - 12}:00 PM"
+        elif 13 <= militaryHour <= 23:
+            timeStr = f"{militaryHour - 12}:00"
+            timeStr += " AM" if militaryHour == 24 else " PM"
         else:
             raise ValueError("militaryHour must be 0-24")
         # get timezone
